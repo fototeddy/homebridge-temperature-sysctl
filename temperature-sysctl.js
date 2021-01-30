@@ -3,11 +3,12 @@
 const sysctl = require('sysctl');
 const undotpath = require('undotpath');
 
-let Service, Characteristic;
+let Service, Characteristic, FakeGatoHistoryService;
 
 module.exports = (homebridge) => {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
+  FakeGatoHistoryService = require('fakegato-history')(homebridge);
 
   homebridge.registerAccessory('homebridge-sysctl', 'temperature-sysctl', TemperatureSysctlPlugin);
 };
@@ -41,6 +42,13 @@ class TemperatureSysctlPlugin
         .on('get', this.getTemperature.bind(this, sysctlName));
       this.sensors.push(tempSensor);
     });
+    this.loggingService = new FakeGatoHistoryService('weather', this, { storage: 'fs' });
+    this.loggingService.addEntry({
+          time: moment().unix(),
+          temp: tempSensor,
+
+
+        });
   }
 
   getTemperature(sysctlName, cb) {
@@ -56,6 +64,8 @@ class TemperatureSysctlPlugin
   // TODO: other services?
 
   getServices() {
-    return this.sensors;
+    return [this.sensors,
+      this.loggingService
+    ];
   }
 }

@@ -27,6 +27,8 @@
   "homepage": "https://github.com/rxseger/homebridge-temperature-sysctl#readme",
   "dependencies": {
     "sysctl": "0.0.1",
-    "undotpath": "^1.0.0"
+    "undotpath": "^1.0.0",
+    "fakegato-history": "^0.5.6",
+
   }
 }
